@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -19,19 +20,22 @@ import java.util.Locale;
 
 @TeleOp
 public class IMUTest extends LinearOpMode {
-    private DcMotor motorL;
-    private DcMotor motorR;
-    private BNO055IMU imu;
     private Orientation angles;
     private Acceleration gravity;
+    private boolean test = true;
+    private DcMotor motorL;
+    private DcMotor motorR;
+    private CRServo feeder;
+    private BNO055IMU imu;
+    private DcMotor lifter;
 
     @Override
     public void runOpMode() throws InterruptedException {
         motorL = hardwareMap.get(DcMotor.class, "motorL");
         motorR = hardwareMap.get(DcMotor.class, "motorR");
-        angles.angleUnit = AngleUnit.DEGREES;
-        angles.axesOrder = AxesOrder.XYZ;
-        angles.axesReference = AxesReference.EXTRINSIC;
+        feeder = hardwareMap.get(CRServo.class, "feeder");
+        lifter = hardwareMap.get(DcMotor.class, "lifter");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -40,9 +44,11 @@ public class IMUTest extends LinearOpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        angles = imu.getAngularOrientation();
+        angles.angleUnit = AngleUnit.DEGREES;
+        angles.axesOrder = AxesOrder.XYZ;
+        angles.axesReference = AxesReference.EXTRINSIC;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -53,13 +59,19 @@ public class IMUTest extends LinearOpMode {
         while(opModeIsActive()){
             angles = imu.getAngularOrientation();
 
-            turnToAngle(45);
+            if(gamepad1.a){
+                if(test){
+                    turnToAngle(45);
+                    test = false;
+                }
+            }
 
             telemetry.update();
         }
     }
 
     private void turnToAngle(float angle){
+        Orientation angles = imu.getAngularOrientation();
         if(angles.thirdAngle > angle){
             while(angles.thirdAngle > angle){
                 turn("right", (double)(0.25 + Math.abs((0.75/360)*(angles.thirdAngle-angle))));
@@ -75,13 +87,13 @@ public class IMUTest extends LinearOpMode {
         motorR.setPower(0);
     }
 
-    private void turn(String direction, double power){
-        if(direction.equals("left")){
-            motorL.setPower(-1*power);
-            motorR.setPower(-1*power);
-        } else if(direction.equals("right")){
-            motorL.setPower(1*power);
-            motorR.setPower(1*power);
+    private void turn(String direction, double power) {
+        if (direction.equals("left")) {
+            motorL.setPower(-1 * power);
+            motorR.setPower(-1 * power);
+        } else if (direction.equals("right")) {
+            motorL.setPower(1 * power);
+            motorR.setPower(1 * power);
         }
     }
 

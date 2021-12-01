@@ -65,26 +65,46 @@ public class IMUTest extends LinearOpMode {
                     test = false;
                 }
             }
+            if(gamepad1.b){
+                telemetry.addData("Angle", angles.thirdAngle);
+                turn("right", 0.75);
+            } else {
+                motorL.setPower(0);
+                motorR.setPower(0);
+            }
 
             telemetry.update();
         }
     }
 
     private void turnToAngle(float angle){
-        Orientation angles = imu.getAngularOrientation();
-        if(angles.thirdAngle > angle){
-            while(angles.thirdAngle > angle){
-                turn("right", (double)(0.25 + Math.abs((0.75/360)*(angles.thirdAngle-angle))));
-                angles = imu.getAngularOrientation();
+        angles = imu.getAngularOrientation();
+        double t1 = 0;
+        double t2 = 0;
+        boolean asdf = true;
+        double loopTime = 0;
+        while(!(angles.thirdAngle < angle+5 && angles.thirdAngle > angle-5)){
+            if(asdf){
+                t1 = System.currentTimeMillis();
             }
-        } else if (angles.thirdAngle < angle){
-            while(angles.thirdAngle < angle){
-                turn("left", (double)(0.25 + Math.abs((0.75/360)*(angles.thirdAngle-angle))));
-                angles = imu.getAngularOrientation();
+            if(!asdf){
+                t2 = System.currentTimeMillis();
+                loopTime = t2-t1;
+            }
+            asdf = false;
+            angles = imu.getAngularOrientation();
+            double error = angle - angles.thirdAngle;
+            double P = -(0.25 + Math.abs((0.75/360)));
+            if(error < 0){
+                turn("right", P*error);
+            }
+            if(error > 0){
+                turn("left", P*error);
             }
         }
         motorL.setPower(0);
         motorR.setPower(0);
+        telemetry.addData("loop time", loopTime);
     }
 
     private void turn(String direction, double power) {
@@ -141,7 +161,7 @@ public class IMUTest extends LinearOpMode {
                 });
 
         telemetry.addLine()
-                .addData("grvty", new Func<String>() {
+                .addData("gravity", new Func<String>() {
                     @Override public String value() {
                         return gravity.toString();
                     }

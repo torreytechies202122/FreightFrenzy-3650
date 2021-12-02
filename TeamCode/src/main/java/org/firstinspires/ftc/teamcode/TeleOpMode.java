@@ -24,11 +24,6 @@ public class TeleOpMode extends LinearOpMode {
                 new Drive(hardwareMap.get(DcMotor.class, "motorR"), hardwareMap.get(DcMotor.class, "motorL")),
                 new Feeder(hardwareMap.get(CRServo.class, "spinner"), hardwareMap.get(CRServo.class, "feederLifter")),
                 new Lifter(hardwareMap.get(DcMotor.class, "lifter"), hardwareMap.get(CRServo.class, "extender"), hardwareMap.get(CRServo.class, "boxRotation")));
-        motorL = hardwareMap.get(DcMotor.class, "motorL");
-        motorR = hardwareMap.get(DcMotor.class, "motorR");
-        lifter = hardwareMap.get(DcMotor.class, "lifter");
-        extender = hardwareMap.get(CRServo.class, "extender");
-        boxRotation = hardwareMap.get(CRServo.class, "boxRotation");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();

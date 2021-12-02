@@ -31,7 +31,9 @@ public class TeleOpMode extends LinearOpMode {
         while(opModeIsActive()){
 
             if(gamepad1.right_trigger != 0) {
-                robot.getFeeder().start();
+                robot.getFeeder().start(1);
+            } else if(gamepad1.left_trigger != 0){
+                robot.getFeeder().start(-1);
             } else {
                 robot.getFeeder().stop();
             }
@@ -44,13 +46,22 @@ public class TeleOpMode extends LinearOpMode {
                 robot.getFeeder().lift("stop");
             }
 
-            if(gamepad2.a){
+            if(gamepad2.right_stick_x > 0){
                 robot.getLifter().extend();
+            } else if(gamepad2.right_stick_x < 0){
+                robot.getLifter().retract();
             } else {
                 robot.getLifter().stopExtender();
             }
 
-            robot.getLifter().rotateBox(gamepad2.right_stick_x);
+            if(gamepad2.right_bumper){
+                robot.getLifter().rotateBox(1);
+            } else if(gamepad2.left_bumper){
+                robot.getLifter().rotateBox(-1);
+            } else {
+                robot.getLifter().rotateBox(-0.05);
+            }
+
             robot.getLifter().move(-gamepad2.left_stick_y);
             robot.getDrive().drive(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
             telemetry.update();

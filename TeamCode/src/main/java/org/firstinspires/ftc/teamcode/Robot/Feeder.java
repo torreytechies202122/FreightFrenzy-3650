@@ -11,8 +11,8 @@ public class Feeder {
         this.lifter = lifter;
     }
 
-    public void start(){
-        spinner.setPower(1);
+    public void start(int direction){
+        spinner.setPower(direction);
     }
 
     public void stop(){

@@ -15,26 +15,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.teamcode.Robot.Drive;
+import org.firstinspires.ftc.teamcode.Robot.Feeder;
+import org.firstinspires.ftc.teamcode.Robot.Lifter;
+import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 import java.util.Locale;
 
 @TeleOp
 public class IMUTest extends LinearOpMode {
+    private Robot robot;
     private Orientation angles;
     private Acceleration gravity;
     private boolean test = true;
-    private DcMotor motorL;
-    private DcMotor motorR;
-    private CRServo feeder;
     private BNO055IMU imu;
-    private DcMotor lifter;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        motorL = hardwareMap.get(DcMotor.class, "motorL");
-        motorR = hardwareMap.get(DcMotor.class, "motorR");
-        feeder = hardwareMap.get(CRServo.class, "feeder");
-        lifter = hardwareMap.get(DcMotor.class, "lifter");
+        Robot robot = new Robot(
+                new Drive(hardwareMap.get(DcMotor.class, "motorR"), hardwareMap.get(DcMotor.class, "motorL")),
+                new Feeder(hardwareMap.get(CRServo.class, "spinner"), hardwareMap.get(CRServo.class, "feederLifter")),
+                new Lifter(hardwareMap.get(DcMotor.class, "lifter"), hardwareMap.get(CRServo.class, "extender"), hardwareMap.get(CRServo.class, "boxRotation")));
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -69,8 +70,7 @@ public class IMUTest extends LinearOpMode {
                 telemetry.addData("Angle", angles.thirdAngle);
                 turn("right", 0.75);
             } else {
-                motorL.setPower(0);
-                motorR.setPower(0);
+                robot.getDrive().drive(0, 0);
             }
 
             telemetry.update();
@@ -82,6 +82,7 @@ public class IMUTest extends LinearOpMode {
         double t1 = 0;
         double t2 = 0;
         boolean asdf = true;
+        boolean asdfg = true;
         double loopTime = 0;
         while(!(angles.thirdAngle < angle+5 && angles.thirdAngle > angle-5)){
             if(asdf){
@@ -89,7 +90,12 @@ public class IMUTest extends LinearOpMode {
             }
             if(!asdf){
                 t2 = System.currentTimeMillis();
-                loopTime = t2-t1;
+                if(asdfg) {
+                    loopTime = t2 - t1;
+                    telemetry.addData("loop time", loopTime);
+                    telemetry.update();
+                }
+                asdfg = false;
             }
             asdf = false;
             angles = imu.getAngularOrientation();
@@ -102,18 +108,14 @@ public class IMUTest extends LinearOpMode {
                 turn("left", P*error);
             }
         }
-        motorL.setPower(0);
-        motorR.setPower(0);
-        telemetry.addData("loop time", loopTime);
+        robot.getDrive().drive(0, 0);
     }
 
     private void turn(String direction, double power) {
         if (direction.equals("left")) {
-            motorL.setPower(-1 * power);
-            motorR.setPower(-1 * power);
+            robot.getDrive().drive(-power, power);
         } else if (direction.equals("right")) {
-            motorL.setPower(1 * power);
-            motorR.setPower(1 * power);
+            robot.getDrive().drive(power, -power);
         }
     }
 

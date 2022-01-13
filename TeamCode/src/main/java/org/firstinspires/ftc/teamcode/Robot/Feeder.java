@@ -3,20 +3,25 @@ package org.firstinspires.ftc.teamcode.Robot;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 public class Feeder {
-    private CRServo spinner;
+    private CRServo topSpinner;
+    private CRServo bottomSpinner;
     private CRServo lifter;
 
-    public Feeder(CRServo spinner, CRServo lifter){
-        this.spinner = spinner;
+
+    public Feeder(CRServo topSpinner, CRServo bottomSpinner, CRServo lifter){
+        this.topSpinner = topSpinner;
         this.lifter = lifter;
+        this.bottomSpinner = bottomSpinner;
     }
 
     public void start(int direction){
-        spinner.setPower(direction);
+        topSpinner.setPower(direction);
+        bottomSpinner.setPower(direction);
     }
 
     public void stop(){
-        spinner.setPower(0);
+        topSpinner.setPower(0);
+        bottomSpinner.setPower(0);
     }
 
     public void lift(String direction){

@@ -5,14 +5,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class Lifter {
-    private DcMotorEx lifter;
-    private CRServo extender;
-    private CRServo boxRotator;
+    private DcMotor lifter;
+    private CRServo claw;
 
-    public Lifter(DcMotorEx lifter, CRServo extender, CRServo boxRotator) {
+    public Lifter(DcMotor lifter, CRServo claw) {
         this.lifter = lifter;
-        this.extender = extender;
-        this.boxRotator = boxRotator;
+        this.claw = claw;
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
@@ -20,25 +18,7 @@ public class Lifter {
         lifter.setPower(power);
     }
 
-    public void extend() {
-        extender.setPower(1);
+    public void setClawPower(double power){
+        claw.setPower(power);
     }
-
-    public void retract() {
-        extender.setPower(-1);
-    }
-
-    public void stopExtender() {
-        extender.setPower(0);
-    }
-
-    public void rotateBox(double power) {
-        boxRotator.setPower(power);
-    }
-
-    public void liftToLevel(int level){
-        if(level == 1){
-        }
-    }
-
 }

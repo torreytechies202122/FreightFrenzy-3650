@@ -17,7 +17,7 @@ public class Drive {
         leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void drive(double powerL, double powerR){
+    public void drive(double powerL, double powerR) {
         leftMotor.setPower(powerL);
         rightMotor.setPower(powerR);
     }

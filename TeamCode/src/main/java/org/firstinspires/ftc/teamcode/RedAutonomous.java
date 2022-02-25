@@ -16,7 +16,7 @@ public class RedAutonomous extends LinearOpMode {
         MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap.get(DcMotorEx.class, "frontLeft"),
                 hardwareMap.get(DcMotorEx.class, "frontRight"),
                 hardwareMap.get(DcMotorEx.class, "backLeft"),
-                hardwareMap.get(DcMotorEx.class, "backRight"));
+                hardwareMap.get(DcMotorEx.class, "backRight"), false);
         Spinner spinner = new Spinner(hardwareMap.get(CRServo.class, "spinner"));
 
         telemetry.addData("Status", "Initialized");

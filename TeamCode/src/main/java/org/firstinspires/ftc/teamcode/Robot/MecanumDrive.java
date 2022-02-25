@@ -15,7 +15,7 @@ public class MecanumDrive {
     private DcMotorEx backLeft;
     private DcMotorEx backRight;
 
-    public MecanumDrive(DcMotorEx frontLeft, DcMotorEx frontRight, DcMotorEx backLeft, DcMotorEx backRight){
+    public MecanumDrive(DcMotorEx frontLeft, DcMotorEx frontRight, DcMotorEx backLeft, DcMotorEx backRight, boolean b){
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
@@ -23,6 +23,20 @@ public class MecanumDrive {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        if(b) {
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void driveVelocity(double powerfL, double powerfR, double powerbL, double powerbR){
+        frontLeft.setVelocity(powerfL*2080);
+        frontRight.setVelocity(powerfR*2080);
+        backLeft.setVelocity(powerbL*2080);
+        backRight.setVelocity(powerbR*2080);
     }
 
     public void drive(double powerfL, double powerfR, double powerbL, double powerbR){
@@ -30,9 +44,10 @@ public class MecanumDrive {
         frontRight.setPower(powerfR);
         backLeft.setPower(powerbL);
         backRight.setPower(powerbR);
+    }
 
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    public String getVelocity(){
+        return "FrontLeft " + frontLeft.getVelocity() + "\n FrontRight " + frontRight.getVelocity() + "\n BackLeft " + backLeft.getVelocity() + "\n backRight " + backRight.getVelocity();
     }
 
     public void driveLeft(double powerfL, double powerbL){

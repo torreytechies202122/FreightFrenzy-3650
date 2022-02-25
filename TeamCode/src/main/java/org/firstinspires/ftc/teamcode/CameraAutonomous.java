@@ -32,18 +32,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Robot.Lifter;
-import org.firstinspires.ftc.teamcode.Robot.MecanumDrive;
-import org.firstinspires.ftc.teamcode.Robot.Spinner;
 
 import java.util.List;
 
@@ -58,7 +52,7 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-public class CameraAutonomousRed extends LinearOpMode {
+public class CameraAutonomous extends LinearOpMode {
   /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
    * the following 4 detectable objects
    *  0: Ball,
@@ -70,7 +64,7 @@ public class CameraAutonomousRed extends LinearOpMode {
    *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
    *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
    */
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "shipping_element.tflite";
     private static final String[] LABELS = {
       "Ball",
       "Cube",
@@ -104,17 +98,12 @@ public class CameraAutonomousRed extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
+    private int level = 1;
 
     @Override
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap.get(DcMotorEx.class, "frontLeft"),
-                hardwareMap.get(DcMotorEx.class, "frontRight"),
-                hardwareMap.get(DcMotorEx.class, "backLeft"),
-                hardwareMap.get(DcMotorEx.class, "backRight"));
-        Spinner spinner = new Spinner(hardwareMap.get(CRServo.class, "spinner"));
-        Lifter lifter = new Lifter(hardwareMap.get(DcMotor.class, "lifter"), hardwareMap.get(CRServo.class, "claw"));
         initVuforia();
         initTfod();
 
@@ -131,7 +120,7 @@ public class CameraAutonomousRed extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(2.5, 16.0/9.0);
+            tfod.setZoom(1, 16.0/9.0);
         }
 
         /** Wait for the game to begin */
@@ -139,20 +128,8 @@ public class CameraAutonomousRed extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        float markerLeftPosition;
-        boolean markerOneFound = false;
-        boolean markerTwoFound = false;
-        int level = 0;
-
         if (opModeIsActive()) {
             while (opModeIsActive()) {
-                lifter.setClawPower(1);
-                lifter.move(1);
-                sleep(100);
-                mecanumDrive.drive(1, 1, 1, 1);
-                sleep(400);
-                mecanumDrive.drive(0.5, -0.5, -0.5, 0.5);
-                sleep(200);
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -167,48 +144,18 @@ public class CameraAutonomousRed extends LinearOpMode {
                                 recognition.getLeft(), recognition.getTop());
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
-                        if(recognition.getLabel().equals("Marker")){
-                            markerLeftPosition = recognition.getLeft();
-                            if(markerLeftPosition < 500){
-                                markerOneFound = true;
-                            }
-                            if(markerLeftPosition > 500){
-                                markerTwoFound = true;
-
+                        if(recognition.getLabel().equalsIgnoreCase("Duck")){
+                            if(recognition.getRight() > 400){
+                                level = 3;
+                            } else if(recognition.getRight() < 400){
+                                level = 2;
                             }
                         }
                       }
-                      if(markerOneFound && markerTwoFound){
-                          level = 1;
-                      }
-                      if(!markerTwoFound && markerOneFound){
-                          level = 3;
-                      }
-                      if(!markerOneFound && markerTwoFound){
-                          level = 2;
-                      }
-                      sleep(1000);
+                      telemetry.addData("level", level);
                       telemetry.update();
                     }
                 }
-                mecanumDrive.drive(-0.5, 0.5, 0.5, -0.5);
-                sleep(600);
-                if(level == 1){
-                    mecanumDrive.drive(0.5, 0.5, 0.5, 0.5);
-                    sleep(200);
-                    mecanumDrive.drive(0, 0, 0, 0);
-                }
-                if(level == 2){
-                    mecanumDrive.drive(0.5, 0.5, 0.5, 0.5);
-                    sleep(250);
-                    mecanumDrive.drive(0, 0, 0, 0);
-                }
-                if(level == 3){
-                    mecanumDrive.drive(0.5, 0.5, 0.5, 0.5);
-                    sleep(300);
-                    mecanumDrive.drive(0, 0, 0, 0);
-                }
-                break;
             }
         }
     }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,15 +26,15 @@ public class BlueAutonomous extends LinearOpMode {
         while(opModeIsActive()){
             spinner.spin(1);
             mecanumDrive.drive(-0.5, -0.5, -0.5, -0.5);
-            pause(300);
+            pause(150);
             mecanumDrive.drive(0.5, -0.5, -0.5, 0.5);
-            pause(2600);
+            pause(2700);
             mecanumDrive.drive(0.125, 0.125,0.125, 0.125);
-            pause(2400);
+            pause(1300);
             mecanumDrive.drive(0, 0, 0, 0);
             pause(3500);
             mecanumDrive.drive(-0.5, -0.5, -0.5, -0.5);
-            pause(550);
+            pause(450);
             mecanumDrive.drive(0, 0, 0, 0);
             break;
         }

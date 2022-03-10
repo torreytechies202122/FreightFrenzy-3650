@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,11 +26,11 @@ public class RedAutonomous extends LinearOpMode {
         while(opModeIsActive()){
             spinner.spin(-1);
             mecanumDrive.drive(-0.5, -0.5, -0.5, -0.5);
-            pause(300);
+            pause(400);
             mecanumDrive.drive(-0.5, 0.5, 0.5, -0.5);
             pause(2700);
             mecanumDrive.drive(0.125, 0.125,0.125, 0.125);
-            pause(2000);
+            pause(1500);
             mecanumDrive.drive(0, 0, 0, 0);
             pause(3500);
             mecanumDrive.drive(-0.5, -0.5, -0.5, -0.5);

@@ -27,8 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -51,8 +52,8 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-public class CameraAutonomous extends LinearOpMode {
+@Autonomous
+public class TensorflowAutonomous extends LinearOpMode {
   /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
    * the following 4 detectable objects
    *  0: Ball,
@@ -66,10 +67,8 @@ public class CameraAutonomous extends LinearOpMode {
    */
     private static final String TFOD_MODEL_ASSET = "shipping_element.tflite";
     private static final String[] LABELS = {
-      "Ball",
-      "Cube",
-      "Duck",
-      "Marker"
+      "A",
+      "B",
     };
 
     /*
@@ -144,7 +143,7 @@ public class CameraAutonomous extends LinearOpMode {
                                 recognition.getLeft(), recognition.getTop());
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
-                        if(recognition.getLabel().equalsIgnoreCase("Duck")){
+                        if(recognition.getLabel().equalsIgnoreCase("A")){
                             if(recognition.getRight() > 400){
                                 level = 3;
                             } else if(recognition.getRight() < 400){
@@ -185,7 +184,7 @@ public class CameraAutonomous extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minResultConfidence = 0.8f;
+       tfodParameters.minResultConfidence = 0.7f;
        tfodParameters.isModelTensorFlow2 = true;
        tfodParameters.inputSize = 320;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);

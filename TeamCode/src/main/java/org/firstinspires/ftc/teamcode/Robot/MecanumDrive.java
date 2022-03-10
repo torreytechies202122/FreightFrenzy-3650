@@ -33,10 +33,10 @@ public class MecanumDrive {
     }
 
     public void driveVelocity(double powerfL, double powerfR, double powerbL, double powerbR){
-        frontLeft.setVelocity(powerfL*2080);
-        frontRight.setVelocity(powerfR*2080);
-        backLeft.setVelocity(powerbL*2080);
-        backRight.setVelocity(powerbR*2080);
+        frontLeft.setVelocity(powerfL*1040);
+        frontRight.setVelocity(powerfR*1040);
+        backLeft.setVelocity(powerbL*1040);
+        backRight.setVelocity(powerbR*1040);
     }
 
     public void drive(double powerfL, double powerfR, double powerbL, double powerbR){
@@ -50,38 +50,10 @@ public class MecanumDrive {
         return "FrontLeft " + frontLeft.getVelocity() + "\n FrontRight " + frontRight.getVelocity() + "\n BackLeft " + backLeft.getVelocity() + "\n backRight " + backRight.getVelocity();
     }
 
-    public void driveLeft(double powerfL, double powerbL){
-        frontLeft.setPower(powerfL);
-        backLeft.setPower(powerbL);
-    }
-
-    public void driveRight(double powerfR, double powerbR){
-        frontRight.setPower(powerfR);
-        backRight.setPower(powerbR);
-    }
-
     public void setMode(DcMotor.RunMode runMode){
         frontLeft.setMode(runMode);
         frontRight.setMode(runMode);
         backLeft.setMode(runMode);
         backRight.setMode(runMode);
-    }
-
-    public void stop(){
-        drive(0, 0, 0, 0);
-    }
-
-    public boolean isStall(){
-        if(frontLeft.getCurrent(CurrentUnit.AMPS) >= 9.2){
-            return true;
-        } else if (frontRight.getCurrent(CurrentUnit.AMPS) >= 9.2){
-            return true;
-        } else if (backLeft.getCurrent(CurrentUnit.AMPS) >= 9.2){
-            return true;
-        } else if (backRight.getCurrent(CurrentUnit.AMPS) >= 9.2){
-            return true;
-        } else {
-            return false;
-        }
     }
 }

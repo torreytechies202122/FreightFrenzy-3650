@@ -89,3 +89,6 @@ lint/tmp/
 /.idea/compiler.xml
 /.idea/jarRepositories.xml
 /.idea/misc.xml
+
+/FtcDashboard
+/FtcDashboard/dash

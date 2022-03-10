@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -20,7 +20,7 @@ public class TeleOpMode extends LinearOpMode {
                 hardwareMap.get(DcMotorEx.class, "backLeft"),
                 hardwareMap.get(DcMotorEx.class, "backRight"), false);
         Spinner spinner = new Spinner(hardwareMap.get(CRServo.class, "spinner"));
-        Lifter lifter = new Lifter(hardwareMap.get(DcMotor.class, "lifter"),
+        Lifter lifter = new Lifter(hardwareMap.get(DcMotorEx.class, "lifter"),
                 hardwareMap.get(CRServo.class, "claw"));
 
         telemetry.addData("Status", "Initialized");
